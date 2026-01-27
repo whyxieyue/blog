@@ -1,23 +1,20 @@
-#!/bin/bash
+#!/bin/sh
 
-# EdgeOne Pages构建脚本
+# EdgeOne Pages Hugo构建脚本
+set -e
 
-# 下载并安装Hugo
-echo "Installing Hugo..."
+echo "开始构建Hugo网站..."
+
+# 下载Hugo二进制文件
+echo "下载Hugo..."
 wget -q https://github.com/gohugoio/hugo/releases/download/v0.154.5/hugo_extended_0.154.5_linux-amd64.tar.gz
+
+# 解压并设置权限
+echo "解压Hugo..."
 tar -xzf hugo_extended_0.154.5_linux-amd64.tar.gz
-chmod +x hugo
-mv hugo /usr/local/bin/hugo
 
-# 清理下载文件
-rm hugo_extended_0.154.5_linux-amd64.tar.gz
+# 直接使用当前目录的hugo
+echo "构建网站..."
+./hugo --minify
 
-# 验证Hugo安装
-echo "Hugo version:"
-hugo version
-
-# 构建网站
-echo "Building Hugo site..."
-hugo --minify
-
-echo "Build completed!"
+echo "构建完成！"
