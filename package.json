@@ -1,0 +1,11 @@
+{
+  "name": "hugo-blog",
+  "version": "1.0.0",
+  "description": "Hugo blog with EdgeOne Pages support",
+  "scripts": {
+    "build": "hugo --minify",
+    "install-hugo": "curl -L https://github.com/gohugoio/hugo/releases/download/v0.154.5/hugo_extended_0.154.5_linux-amd64.tar.gz | tar -xz && sudo mv hugo /usr/local/bin/",
+    "build-edgeone": "chmod +x ./install-hugo && ./install-hugo && hugo --minify"
+  },
+  "devDependencies": {}
+}
