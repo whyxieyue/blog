@@ -52,7 +52,7 @@ jobs:
         git commit -m "🚀 Update built files for EdgeOne Pages [skip ci]" || exit 0
         git push
 
-  deploy-github-pages:
+  github-pages:
     runs-on: ubuntu-latest
     needs: build
     permissions:
@@ -68,12 +68,12 @@ jobs:
 
   notify-edgeone:
     runs-on: ubuntu-latest
-    needs: [build, deploy-github-pages]
+    needs: [build, github-pages]
     if: success()
     steps:
     - name: Notify EdgeOne deployment success
       run: |
         echo "✅ Hugo网站已成功部署到双平台："
-        echo "📄 GitHub Pages: ${{ needs.deploy-github-pages.outputs.page_url }}"
+        echo "📄 GitHub Pages: ${{ needs.github-pages.outputs.page_url }}"
         echo "☁️  EdgeOne Pages: 配置的EdgeOne域名"
         echo "📝 提交信息: ${{ github.event.head_commit.message }}"
