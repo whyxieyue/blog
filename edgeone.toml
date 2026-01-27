@@ -1,0 +1,15 @@
+baseURL = '/'
+languageCode = 'zh-cn'
+theme = "LoveIt-0.3.0"
+title = '个人笔记'
+
+# EdgeOne Pages优化配置
+[params]
+  # 启用相对链接
+  canonifyURLs = false
+  relativeURLs = true
+  uglyURLs = false
+
+# 构建配置
+[build]
+  writeStats = true
