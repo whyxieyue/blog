@@ -1,16 +1,22 @@
-name: Hugo Deploy
+name: Hugo Dual Deploy - GitHub Pages & EdgeOne
 
 on:
   push:
     branches: [ main ]
   pull_request:
     branches: [ main ]
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    
     steps:
-    - name: Checkout
+    - name: Checkout repository
       uses: actions/checkout@v4
       with:
         fetch-depth: 0
@@ -21,47 +27,53 @@ jobs:
         hugo-version: '0.154.5'
         extended: true
 
-    - name: Build for GitHub Pages
-      run: hugo --minify
+    - name: Build Hugo site for GitHub Pages
+      env:
+        HUGO_BASEURL: ${{ github.event.repository.pages.url }}
+      run: hugo --minify --gc
 
-    - name: Upload GitHub Pages artifact
+    - name: Upload artifact for GitHub Pages deployment
       uses: actions/upload-pages-artifact@v3
       with:
         path: ./public
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '22.11.0' # 选择适合的 Node.js 版本
-      
-    - name: Install dependencies
-      run: npm install
-      
-    - name: Build project
-      run: npm run build
-        
-    - name: Deploy to EdgeOne Pages
-      run: npx edgeone pages deploy ./public -n blog -t ${{ secrets.EDGEONE_API_TOKEN }} [-e <env>]
-      env:
-          EDGEONE_API_TOKEN: ${{ secrets.EDGEONE_API_TOKEN }}        
+    - name: Rebuild for EdgeOne Pages (relative URLs)
+      run: |
+        # 删除之前的构建文件
+        rm -rf public
+        # 使用相对URL重新构建，适合EdgeOne
+        hugo --minify --gc --baseURL="/"
 
-          
+    - name: Commit public folder for EdgeOne Pages
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add public/ || true
+        git commit -m "🚀 Update built files for EdgeOne Pages [skip ci]" || exit 0
+        git push
+
   deploy-github-pages:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      contents: read
-      pages: write
-      id-token: write
+      pages: deploy
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    
     steps:
-    - name: Setup Pages
-      uses: actions/configure-pages@v4
-
     - name: Deploy to GitHub Pages
       id: deployment
       uses: actions/deploy-pages@v4
 
-      
+  notify-edgeone:
+    runs-on: ubuntu-latest
+    needs: [build, deploy-github-pages]
+    if: success()
+    steps:
+    - name: Notify EdgeOne deployment success
+      run: |
+        echo "✅ Hugo网站已成功部署到双平台："
+        echo "📄 GitHub Pages: ${{ needs.deploy-github-pages.outputs.page_url }}"
+        echo "☁️  EdgeOne Pages: 配置的EdgeOne域名"
+        echo "📝 提交信息: ${{ github.event.head_commit.message }}"
