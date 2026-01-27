@@ -20,7 +20,7 @@ theme = 'LoveIt-0.3.0'
   [[menu.main]]
     identifier = "posts"
     name = "posts"
-    url = "/posts/"
+    url = "/content/posts/"
     weight = 2
   [[menu.main]]
     identifier = "installation"
