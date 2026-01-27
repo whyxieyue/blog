@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     permissions:
-      pages: deploy
+      pages: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
