@@ -1,4 +1,4 @@
-baseURL = 'https://whyxieyue.github.io/blog/'
+baseURL = '/'
 languageCode = 'en-us'
 title = '个人笔记'
 theme = 'LoveIt-0.3.0'
@@ -9,7 +9,7 @@ theme = 'LoveIt-0.3.0'
   site_logo = ""
   description = "The last theme you'll ever need"
   body_classes = "avenir bg-near-white"
-  baseURLCanDisable = true
+# baseURLCanDisable = true
 
 # Menu Configuration
 [menu]
