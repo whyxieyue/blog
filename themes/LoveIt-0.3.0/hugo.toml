@@ -30,8 +30,8 @@
   # Author config
   # 作者配置
   [params.author]
-    name = "xieyue"
-    email = "admin@199604.cn"
+    name = ""
+    email = ""
     link = ""
 
   # Header config
